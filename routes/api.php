@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\testcontroller;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -28,4 +29,19 @@ Route::post('add_information',[UserController::class,'add_information']);
 Route::get('in_batches',[UserController::class,'in_batches']);//分批传数据
 Route::get('paging',[UserController::class,'paging']);//分页
 Route::post('hot_search',[UserController::class,'hot_search']);//热搜
+//管理员注册登录
+Route::prefix('admin')->group(function () {
+    Route::post('register',[AdminController::class,'register']);  //注册
+    Route::post('login',[AdminController::class,'login']);   //登录
+});
+Route::group([ 'middleware'=>'jwt.role:admins'], function () {
+    Route::post('admin/logout',[AdminController::class,'logout']);  //登出
+    Route::post('admin/refresh',[AdminController::class,'refresh']);  //刷新token
+    Route::get('admin/test',[AdminController::class,'test']);
+});
+//Route::middleware('jwt.role:admin','jwt.auth')->prefix('admin')->group(function () {
+//    Route::post('logout',[AdminController::class,'logout']);  //登出
+//    Route::post('refresh',[AdminController::class,'refresh']);  //刷新token
+//    Route::get('test',[AdminController::class,'test']);
+//});
 
