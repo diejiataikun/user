@@ -80,5 +80,12 @@ class AdminController extends Controller
             json_success('操作成功!',$project,200):
             json_fail('操作失败!',null,100);
     }
+    public function insert_a_title(Request $request)
+    {
+        $project = Admins::insert_titile($request);
+        return $project ?
+            json_success('操作成功!',$project,200):
+            json_fail('操作失败!',null,100);
+    }
 
 }

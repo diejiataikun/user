@@ -14,11 +14,11 @@ class Admins extends Authenticatable implements JWTSubject
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-    protected $table = "Admin";
+    protected $table = "topic";
     // 指定开启时间戳
     public $timestamps = true;
     // 指定主键
-    protected $primaryKey = "id";
+    protected $primaryKey = "to_id";
     // 指定不允许自动填充的字段，字段修改的黑名单
     protected $guarded = [];
 
@@ -88,6 +88,29 @@ class Admins extends Authenticatable implements JWTSubject
         } catch (Exception $e) {
             return 'error'.$e->getMessage();
         }
+    }
+
+    public static function insert_titile($request)
+    {
+        if($request['option_c']==NULL)
+            $option_c=NULL;
+        if($request['option_d']==NULL)
+            $option_d=NULL;
+        $result = self::create([
+            'knowledge_point'=>$request['knowledge_point'],
+            'question_type'=>$request['question_type'],
+            'question_text'=>$request['question_text'],
+            'option_a'=>$request['option_a'],
+            'option_b'=>$request['option_b'],
+            'option_c'=>$request['option_c'],
+            'option_d'=>$request['option_d'],
+            'correct_answer'=>$request['correct_answer'],
+            'explanation'=>$request['explanation'],
+            'subjective_id'=>$request['subjective_id'],
+        ])->to_id;
+        return $result ?
+            $result:
+            false;
     }
 
 

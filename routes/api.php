@@ -29,10 +29,12 @@ Route::post('add_information',[UserController::class,'add_information']);
 Route::get('in_batches',[UserController::class,'in_batches']);//分批传数据
 Route::get('paging',[UserController::class,'paging']);//分页
 Route::post('hot_search',[UserController::class,'hot_search']);//热搜
+
 //管理员注册登录
 Route::prefix('admin')->group(function () {
     Route::post('register',[AdminController::class,'register']);  //注册
     Route::post('login',[AdminController::class,'login']);   //登录
+    Route::post('insert_a_title',[AdminController::class,'insert_a_title']);//插入题目
 });
 Route::group([ 'middleware'=>'jwt.role:admins'], function () {
     Route::post('admin/logout',[AdminController::class,'logout']);  //登出
