@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admins;
+use App\Models\Laboratory;
+use App\Models\Subjective;
+use App\Models\Teacher;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -21,12 +25,13 @@ class AdminController extends Controller
     }
 
     /**
+     * 添加管理员账号
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request){
         $registeredInfo = self::userHandle($request);
-        $count = Admins::checknumber($registeredInfo['account']);   //检测账号密码是否存在
+        $count = Teacher::checknumber($registeredInfo['account']);   //检测账号密码是否存在
         if (is_error($count) == true){
             return json_fail('注册失败!检测是否存在的时候出错啦',$count,100  ) ;
         }
@@ -80,12 +85,153 @@ class AdminController extends Controller
             json_success('操作成功!',$project,200):
             json_fail('操作失败!',null,100);
     }
+
+
+    /**
+     * 添加实验室
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function add_laboratory(Request $request)
+    {
+        $count = Laboratory::checklaboratory($request['lab_code']);
+        if (is_error($count) == true){
+            return json_fail('添加失败!检测是否存在的时候出错啦',$count,100  ) ;
+        }
+        if ($count == 0){
+            $laboratory_id = Laboratory::createlaboratory($request);
+            if (is_error($laboratory_id) == true){
+                return json_fail('注册失败!添加数据的时候有问题',$laboratory_id,100  ) ;
+            }
+            return json_success('注册成功!',$laboratory_id,200  ) ;
+        }
+        return json_fail('注册失败!该用户信息已经被注册过了',null,101 ) ;
+    }
+
+    /**
+     * 添加教师账号
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function add_teacher_account(Request $request)
+    {
+        $count = Teacher::checkteacher($request['account']);
+        if (is_error($count) == true){
+            return json_fail('添加失败!检测是否存在的时候出错啦',$count,100  ) ;
+        }
+        $result = Laboratory::checklaboratory_teacher($request['lab_name']);
+        if ($result == 0){
+            return json_fail('添加失败!检测是否存在的时候出错啦',$count,100  ) ;
+        }
+        //如果没有这个账号并且有这个实验室
+        if ($count == 0 && $result ){
+            $teacher_id = Teacher::createteacher($request);
+            if (is_error($teacher_id) == true){
+                return json_fail('注册失败!添加数据的时候有问题',$teacher_id,100  ) ;
+            }
+            return json_success('注册成功!',$teacher_id,200  ) ;
+        }
+        return json_fail('注册失败!该用户信息已经被注册过了',null,101 ) ;
+    }
+
+    /**
+     * 查看实验室所有数据
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function view_the_lab()
+    {
+        $result = Laboratory::view_all_lab();
+        return json_success('所有实验室数据',$result,200);
+    }
+
+    /**
+     * 删除实验室数据(暂不需要用)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+  public function delete_the_lab(Request $request)
+  {
+      $result = Laboratory::delete_lab($request['lab_code']);
+      return json_success('删除成功',$result,200);
+  }
+
+    /**
+     * 查看老师账号信息
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+  public function view_the_teacher(Request $request)
+  {
+      $result = Teacher::view_all_teacher($request);
+      return json_success('教师账号的所有数据',$result,200);
+  }
+
+    /**
+     * 修改教师账户信息
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+  public function update_teacher(Request $request)
+  {
+      $result = Teacher::update_account($request);
+      if(is_error($result) == true){
+          return json_fail('修改数据失败!',$result,100  ) ;
+      }else{
+          return json_success('修改数据成功!',$result,200 );
+      }
+  }
+
+    /**
+     * 删除教师账户
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+  public function delete_account_teacher(Request $request)
+  {
+      $id = $request['t_id'];
+      $result = Teacher::delete_account($id);
+      if(is_error($result) == true){
+          return json_fail('删除数据失败!',$result,100  ) ;
+      }else{
+          return json_success('删除数据成功!',$result,200 );
+      }
+  }
+
+    /**
+     * 分页数据
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function paging()
+    {
+        $pageSize = 20;//分页每页的数据量
+        $users = Topic::paginate($pageSize);//使用paginate来进行分页
+        return json_success('分页的题库数据，一页20题',$users,200);
+    }
+
+    /**
+     * 插入题目
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function insert_a_title(Request $request)
     {
-        $project = Admins::insert_titile($request);
+        $project = Topic::insert_titile($request);
         return $project ?
             json_success('操作成功!',$project,200):
             json_fail('操作失败!',null,100);
     }
 
+    /**
+     * 插入主观题目
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function add_subjective(Request $request)
+    {
+        $project = Subjective::add_sub($request);
+        return $project ?
+            json_success('操作成功!',$project,200):
+            json_fail('操作失败!',null,100);
+
+    }
 }
