@@ -205,7 +205,11 @@ class AdminController extends Controller
     {
         $pageSize = 20;//分页每页的数据量
         $users = Topic::paginate($pageSize);//使用paginate来进行分页
-        return json_success('分页的题库数据，一页20题',$users,200);
+        $users2 = Subjective::select('su_id','subjective_questions','subjective_answer')->get();
+        $res = [
+            $users,$users2
+        ];
+        return json_success('分页的题库数据，一页20题,最后会有主观题',$res,200);
     }
 
     /**
@@ -230,8 +234,71 @@ class AdminController extends Controller
     {
         $project = Subjective::add_sub($request);
         return $project ?
-            json_success('操作成功!',$project,200):
-            json_fail('操作失败!',null,100);
+            json_success('添加成功!',$project,200):
+            json_fail('添加失败!',null,100);
+    }
 
+    /**
+     * 修改客观题
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_title(Request $request)
+    {
+        $id = $request['to_id'];
+        $res = Topic::update_title_one($id,$request);
+        if (is_error($res) == true){
+            return json_fail('修改题目失败!',$res,100  ) ;
+        }else{
+            return json_success('修改题目成功!',$res,200 );
+        }
+    }
+
+    /**
+     * 修改主观题
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update_subjective(Request $request)
+    {
+        $id = $request['su_id'];
+        $res = Subjective::update_subjective_one($id,$request);
+        if (is_error($res) == true){
+            return json_fail('修改题目失败!',$res,100  ) ;
+        }else{
+            return json_success('修改题目成功!',$res,200 );
+        }
+    }
+
+    /**
+     * 删除选择题
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete_title(Request $request)
+    {
+        $id = $request['to_id'];
+        $res = Topic::delete_title_one($id,$request);
+        if (is_error($res) == true){
+            return json_fail('删除题目失败!',$res,100  ) ;
+        }else{
+            return json_success('删除题目成功!',$res,200 );
+        }
+    }
+
+    /**
+     * 删除思考题
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete_subjective(Request $request)
+    {
+        $id = $request['su_id'];
+        $res = Subjective::delete_subjective_one($id,$request);
+        if (is_error($res) == true){
+            return json_fail('删除题目失败!',$res,100  ) ;
+        }else{
+            return json_success('删除题目成功!',$res,200 );
+        }
     }
 }

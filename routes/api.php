@@ -52,6 +52,10 @@ Route::middleware('jwt.role:admins')->prefix('admin')->group(function (){
     Route::get('paging',[AdminController::class,'paging']);//分页题库数据
     Route::post('insert_a_title',[AdminController::class,'insert_a_title']);//插入客观题目
     Route::post('add_subjective',[AdminController::class,'add_subjective']);//插入主观题目
+    Route::post('update_title',[AdminController::class,'update_title']);//修改客观题
+    Route::post('update_subjective',[AdminController::class,'update_subjective']);//修改主观题
+    Route::post('delete_title',[AdminController::class,'delete_title']);//删除选择题
+    Route::post('delete_subjective',[AdminController::class,'delete_subjective']);//删除选择题
     Route::get('test',[AdminController::class,'test']);
 });
 
