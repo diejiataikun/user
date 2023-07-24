@@ -48,7 +48,11 @@ return [
         'admin' => [
             'driver' => 'jwt',
             'provider' => 'admins'
-        ]
+        ],
+        'teacher'=> [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
     ],
 
 
@@ -73,7 +77,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Teacher::class,
         ],
         'admins' => [
             'driver' => 'eloquent',

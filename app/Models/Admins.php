@@ -74,6 +74,7 @@ class Admins extends Authenticatable implements JWTSubject
     }
 
     /**
+     * 创建账号
      * @param $registeredInfo
      * @return string
      */

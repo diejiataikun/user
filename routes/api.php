@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\testcontroller;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -36,7 +37,6 @@ Route::get('use',[UserController::class,'use']);
 Route::prefix('admin')->group(function () {
     Route::post('register',[AdminController::class,'register']);  //注册
     Route::post('login',[AdminController::class,'login']);   //登录
-
 });
 
 Route::middleware('jwt.role:admins')->prefix('admin')->group(function (){
@@ -56,7 +56,13 @@ Route::middleware('jwt.role:admins')->prefix('admin')->group(function (){
     Route::post('update_subjective',[AdminController::class,'update_subjective']);//修改主观题
     Route::post('delete_title',[AdminController::class,'delete_title']);//删除选择题
     Route::post('delete_subjective',[AdminController::class,'delete_subjective']);//删除选择题
-    Route::get('test',[AdminController::class,'test']);
+    Route::get('test',[AdminController::class,'test']);//测试用
 });
-
+Route::prefix('teach')->group(function (){
+    Route::post('login',[TeacherController::class,'login']);   //登录
+});
+Route::middleware('jwt.role:user')->prefix('teach')->group(function () {
+    Route::post('refresh',[TeacherController::class,'refresh']);//刷新token
+    Route::post('logout',[TeacherController::class,'logout']);//退出登录
+});
 

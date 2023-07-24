@@ -46,16 +46,17 @@ class AdminController extends Controller
     }
 
     /**
+     * 登录
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request){
-        $credentials['account'] = $request['account'];
-        $credentials['password'] = $request['password'];
-        $token = auth('admin')->attempt($credentials);
-        return $token ?
-            json_success('登录成功!',$token,  200):
-            json_fail('登录失败!账号或密码错误',null, 100 ) ;
+            $credentials['account'] = $request['account'];
+            $credentials['password'] = $request['password'];
+            $token = auth('admin')->attempt($credentials);
+            return $token ?
+                json_success('登录成功!',$token,  200):
+                json_fail('登录失败!账号或密码错误',null, 100 ) ;
     }
 
     /**

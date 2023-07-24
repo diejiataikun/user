@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Teacher extends Model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+class Teacher extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     use SoftDeletes;
@@ -22,6 +25,22 @@ class Teacher extends Model
     protected $primaryKey = "t_id";
     // 指定不允许自动填充的字段，字段修改的黑名单
     protected $guarded = [];
+    /**
+     * 获取会储存到 jwt 声明中的标识
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * 返回包含要添加到 jwt 声明中的自定义键值对数组
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return ["role"=>"user"];
+    }
 
     //热搜
     static public function search($request)
