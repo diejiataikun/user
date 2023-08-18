@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 
@@ -56,5 +57,14 @@ class TeacherController extends Controller
     {
         auth('api')->logout();
         return  json_success('用户退出登录成功!',null,  200);
+    }
+    public function student_information(Request $request)
+    {
+        $account = $request['account'];
+        $project = Student::get_information($account);
+        return $project ?
+            json_success('该实验室学生信息',$project,200):
+            json_fail('操作失败!',null,100);
+
     }
 }

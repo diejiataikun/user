@@ -31,7 +31,7 @@ class AdminController extends Controller
      */
     public function register(Request $request){
         $registeredInfo = self::userHandle($request);
-        $count = Teacher::checknumber($registeredInfo['account']);   //检测账号密码是否存在
+        $count = Admins::checknumber($registeredInfo['account']);   //检测账号密码是否存在
         if (is_error($count) == true){
             return json_fail('注册失败!检测是否存在的时候出错啦',$count,100  ) ;
         }

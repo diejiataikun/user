@@ -53,6 +53,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
+        'student'=>[
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ]
     ],
 
 

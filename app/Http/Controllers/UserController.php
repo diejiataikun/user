@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Teacher;
 use App\Models\Laboratory;
+//use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -69,6 +71,14 @@ class UserController extends Controller
     }
 
 
+    public function exportPdf()
+    {
+        $data = Teacher::all(); // 获取要导出为 PDF 的数据
+
+        $pdf = PDF::loadView('pdf_template', compact('data'));
+
+        return $pdf->download('data_export.pdf');
+    }
 
 
 }

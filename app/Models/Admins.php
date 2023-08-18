@@ -56,8 +56,8 @@ class Admins extends Authenticatable implements JWTSubject
     }
 
 
-
     /**
+     * 检测账号是否存在
      * @param $account
      * @return string
      */
@@ -90,8 +90,6 @@ class Admins extends Authenticatable implements JWTSubject
             return 'error'.$e->getMessage();
         }
     }
-
-
 
 
  }

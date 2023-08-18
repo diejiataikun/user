@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\testcontroller;
 use App\Http\Controllers\UserController;
@@ -64,5 +65,14 @@ Route::prefix('teach')->group(function (){
 Route::middleware('jwt.role:user')->prefix('teach')->group(function () {
     Route::post('refresh',[TeacherController::class,'refresh']);//刷新token
     Route::post('logout',[TeacherController::class,'logout']);//退出登录
+    Route::post('student_information',[TeacherController::class,'student_information']);//学生信息
 });
+Route::get('exportPdf',[UserController::class,'exportPdf']);//导出pdf测试
+
+Route::prefix('student')->group(function (){
+    Route::post('register',[StudentController::class,'register']);//注册
+    Route::post('receive_mailbox',[StudentController::class,'receive_mailbox']);//获取验证码
+    Route::post('login',[StudentController::class,'login']);//登录
+});
+
 
