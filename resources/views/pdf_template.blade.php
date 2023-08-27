@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="">
+<html>
 <head>
     <meta charset="UTF-8">
 </head>
@@ -7,19 +7,21 @@
 <table>
     <thead>
     <tr>
-        <th>专有id</th>
-        <th>账号</th>
-        <th>密码</th>
-        <th>实验室代码</th>
+        <th>Account</th>
+        <th>Name</th>
+        <th>Grade</th>
+        <th>Specialized</th>
+        <th>Score</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($data as $row)
+    @foreach ($data as $item)
         <tr>
-            <td>{{ $row->t_id }}</td>
-            <td>{{ $row->account }}</td>
-            <td>{{ $row->password }}</td>
-            <td>{{ $row->lab_code_id }}</td>
+            <td>{{ $item['account'] }}</td>
+            <td>{{ $item['name'] }}</td>
+            <td>{{ $item['grade'] }}</td>
+            <td>{{ $item['specialized'] }}</td>
+            <td>{{ $item['score'] }}</td>
         </tr>
     @endforeach
     </tbody>

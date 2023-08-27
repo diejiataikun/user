@@ -72,4 +72,5 @@ class StudentController extends Controller
             return json_fail('账户不存在',null,101);
         }
     }
+
 }

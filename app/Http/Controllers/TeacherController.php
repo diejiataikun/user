@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Fraction;
 use App\Models\Student;
 use App\Models\Teacher;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -90,6 +92,12 @@ class TeacherController extends Controller
             json_success('学生思考题作答',$result,200):
             json_fail('返回失败',null,100);
     }
+
+    /**
+     * 批改
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function correcting(Request $request)
     {
         $subjective_questions_score = $request['subjective_questions_score'];
@@ -103,4 +111,46 @@ class TeacherController extends Controller
                 json_fail('批改失败',null,100);
         }else return json_fail('批改失败，检查是否数据错误',null,101);
     }
+
+
+    public function exportPdf(Request $request)
+    {
+        // 根据 laboratory_id 查找学生的 id
+        $students = Student::where('laboratory_id', $request['laboratory_id'])->get();
+
+        if ($students->isEmpty()) {
+            // 处理找不到学生的情况
+            return json_fail('找不到学生',null,100);
+        }
+
+        // 创建一个数组来存储所有学生的数据
+        $data = [];
+
+        foreach ($students as $student) {
+            // 根据学生的 id 查找相关的 fraction_id
+            $fraction_id = $student->fraction_id;
+
+            // 使用 fraction_id 查找相关的分数数据
+            $fraction = Fraction::find($fraction_id);
+
+            if ($fraction) {
+                // 将学生和分数数据添加到数组中
+                $data[] = [
+                    'account' => $student->account,
+                    'name' => $student->name,
+                    'grade' => $student->grade,
+                    'specialized' => $student->specialized,
+                    'score' => $fraction->score,
+                ];
+            }
+        }
+
+        // 使用 PDF 库生成 PDF
+        $pdf = PDF::loadView('pdf_template', compact('data'));
+
+        // 返回生成的 PDF
+        return $pdf->download('exported-data.pdf');
+    }
+
+
 }

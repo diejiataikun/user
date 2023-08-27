@@ -163,6 +163,8 @@ class Student extends Authenticatable implements JWTSubject
         }
     }
 
+
+
     /**
      * 获取会储存到 jwt 声明中的标识
      */
