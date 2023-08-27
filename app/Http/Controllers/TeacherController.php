@@ -31,7 +31,7 @@ class TeacherController extends Controller
         $res = Teacher::checkteacher($credentials['account']);
         if(is_error($res) == false)
         {
-            $token = auth('api')->attempt($credentials);
+            $token = auth('teacher')->attempt($credentials);
             return $token ?
                 json_success('登录成功!',$token,  200):
                 json_fail('登录失败!账号或密码错误',null, 100 ) ;
@@ -45,7 +45,7 @@ class TeacherController extends Controller
      */
     public function refresh()
     {
-        $token = auth('api')->refresh();
+        $token = auth('teacher')->refresh();
         return  json_success('token刷新成功!',$token, 200);
     }
 
@@ -55,9 +55,15 @@ class TeacherController extends Controller
      */
     public function logout()
     {
-        auth('api')->logout();
+        auth('teacher')->logout();
         return  json_success('用户退出登录成功!',null,  200);
     }
+
+    /**
+     * 初始化学生信息
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function student_information(Request $request)
     {
         $account = $request['account'];
@@ -66,5 +72,35 @@ class TeacherController extends Controller
             json_success('该实验室学生信息',$project,200):
             json_fail('操作失败!',null,100);
 
+    }
+
+    /**
+     * 学生思考题作答
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function fetch(Request $request)
+    {
+        $id = $request['u_id'];
+        $result = Student::select('think_questions')
+            ->join('fraction','student.fraction_id','=','fraction.f_id')
+            ->where('u_id',$id)
+            ->get();
+        return $result ?
+            json_success('学生思考题作答',$result,200):
+            json_fail('返回失败',null,100);
+    }
+    public function correcting(Request $request)
+    {
+        $subjective_questions_score = $request['subjective_questions_score'];
+        $id = $request['u_id'];
+        $add = Student::add_questions_score($request,$subjective_questions_score,$id);
+        if($add)
+        {
+            $result = Student::add_score($request,$id);
+            return $result ?
+                json_success('批改成功',$result,200):
+                json_fail('批改失败',null,100);
+        }else return json_fail('批改失败，检查是否数据错误',null,101);
     }
 }

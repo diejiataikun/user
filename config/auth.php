@@ -51,11 +51,11 @@ return [
         ],
         'teacher'=> [
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'teacher',
         ],
         'student'=>[
             'driver' => 'jwt',
-            'provider' => 'users',
+            'provider' => 'student',
         ]
     ],
 
@@ -81,13 +81,20 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Teacher::class,
+            'model' => App\Models\User::class,
         ],
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admins::class,
         ],
-
+        'teacher' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Teacher::class,
+        ],
+        'student' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Student::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

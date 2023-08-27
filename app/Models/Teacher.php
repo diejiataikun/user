@@ -39,7 +39,7 @@ class Teacher extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return ["role"=>"users"];
+        return ["role"=>"teacher"];
     }
 
     //热搜

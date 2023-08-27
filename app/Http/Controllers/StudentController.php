@@ -64,7 +64,7 @@ class StudentController extends Controller
         $res = Student::checknumber($credentials['account']);
         if(is_error($res) == false)
         {
-            $token = auth('api')->attempt($credentials);
+            $token = auth('student')->attempt($credentials);
             return $token ?
                 json_success('登录成功!',$token,  200):
                 json_fail('登录失败!账号或密码错误',null, 100 );

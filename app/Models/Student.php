@@ -39,8 +39,11 @@ class Student extends Authenticatable implements JWTSubject
              $lab = Teacher::where('account',$account)
                  ->join('laboratory','teacher.lab_code_id','=','laboratory.lab_code')
                  ->get();
-             $infor = Student::select('u_id','account','name','grade','specialized','lab_code','lab_name')
+//             $fraction = Teacher::where('account',$account)
+//             ->join('fraction','');
+             $infor = Student::select('u_id','account','name','grade','specialized','lab_code','lab_name','score')
                  ->join('laboratory','student.laboratory_id','=','laboratory.lab_code')
+                 ->join('fraction','student.fraction_id','=','fraction.f_id')
                  ->where('laboratory_id',$lab[0]->lab_code)
                  ->get();
              return $infor;
@@ -94,6 +97,11 @@ class Student extends Authenticatable implements JWTSubject
         }
     }
 
+    /**
+     * 发送邮箱
+     * @param $request
+     * @return array|string
+     */
     public static function judegment_email($request)
     {
         try {
@@ -121,6 +129,41 @@ class Student extends Authenticatable implements JWTSubject
     }
 
     /**
+     * 添加成绩
+     * @param $request
+     * @param $subjective_questions_score
+     * @param $id
+     * @return string
+     */
+    public static function add_questions_score($request,$subjective_questions_score,$id)
+    {
+        try{
+            $f_id = Student::where('u_id',$id)->get();
+            $result = Fraction::where('f_id',$f_id[0]->fraction_id)->first();
+            $result->subjective_questions_score =$subjective_questions_score;
+            $result->save();
+            return $result->save();
+        }catch (Exception $e) {
+            return 'error'.$e->getMessage();
+        }
+    }
+
+    public static function add_score($request,$id)
+    {
+        try{
+            $fraction_id = Student::where('u_id',$id)->get();
+            $f_id = Fraction::where('f_id',$fraction_id[0]->fraction_id)->get();
+            $score = $f_id[0]->objective_questions_score + $f_id[0]->subjective_questions_score;
+            $result = Fraction::where('f_id',$fraction_id[0]->fraction_id)->first();
+            $result->score = $score;
+            $result->save();
+            return $result->save();
+        }catch (Exception $e) {
+            return 'error'.$e->getMessage();
+        }
+    }
+
+    /**
      * 获取会储存到 jwt 声明中的标识
      */
     public function getJWTIdentifier()
@@ -134,7 +177,9 @@ class Student extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return ["role"=>"user"];
+        return ["role"=>"student"];
     }
+
+
 
 }

@@ -62,10 +62,12 @@ Route::middleware('jwt.role:admins')->prefix('admin')->group(function (){
 Route::prefix('teach')->group(function (){
     Route::post('login',[TeacherController::class,'login']);   //登录
 });
-Route::middleware('jwt.role:user')->prefix('teach')->group(function () {
+Route::middleware('jwt.role:teacher')->prefix('teach')->group(function () {
     Route::post('refresh',[TeacherController::class,'refresh']);//刷新token
     Route::post('logout',[TeacherController::class,'logout']);//退出登录
     Route::post('student_information',[TeacherController::class,'student_information']);//学生信息
+    Route::post('fetch',[TeacherController::class,'fetch']);//获取思考题
+    Route::post('correcting',[TeacherController::class,'correcting']);//批改
 });
 Route::get('exportPdf',[UserController::class,'exportPdf']);//导出pdf测试
 
